@@ -1,32 +1,66 @@
 // Enemies our player must avoid
-var Enemy = function(x, y) {
+
+// var Enemy = function(x, y) {
     // Variables applied to each of our instances go here,
     // we've provided one for you to get started
 
     // The image/sprite for our enemies, this uses
     // a helper we've provided to easily load images
-    this.sprite = 'img/enemy-bug.png';
-    this.x = x;
-    let xValueArray = [20, 30, 40, 50, 65, 75, 90, 100, 110, 125, 150, 200];
-    let randomXValue = xValueArray[Math.floor(Math.random() * xValueArray.length)];
-    this.xSpeed = randomXValue;
-    this.y = y;
-};
+
+//     this.sprite = 'img/enemy-bug.png';
+//     this.x = x;
+//     let xValueArray = [20, 30, 40, 50, 65, 75, 90, 100, 110, 125, 150, 200];
+//     let randomXValue = xValueArray[Math.floor(Math.random() * xValueArray.length)];
+//     this.xSpeed = randomXValue;
+//     this.y = y;
+// };
 
 // Update the enemy's position, required method for game
 // Parameter: dt, a time delta between ticks
-Enemy.prototype.update = function(dt) {
+
+// Enemy.prototype.update = function(dt) {
     // You should multiply any movement by the dt parameter
     // which will ensure the game runs at the same speed for
     // all computers.
     
-    this.x += dt * this.xSpeed;
-};
+//     this.x += dt * this.xSpeed;
+// };
 
 // Draw the enemy on the screen, required method for game
-Enemy.prototype.render = function() {
-    ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
-};
+
+// Enemy.prototype.render = function() {
+//     ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+// };
+
+class Enemy {
+    constructor(x, y) {
+        this.sprite = 'img/enemy-bug.png';
+        this.x = x;
+        let xValueArray = [20, 30, 40, 50, 65, 75, 90, 100, 110, 125, 150, 200];
+        let randomXValue = xValueArray[Math.floor(Math.random() * xValueArray.length)];
+        this.xSpeed = randomXValue;
+        this.y = y;
+    }
+
+    update(dt) {
+        this.x += dt * this.xSpeed;
+        if (this.x > 490) {
+
+            // Remove enemy once it's crossed the canvas
+            let index = allEnemies.indexOf(this);
+            if (index !== -1) {
+                allEnemies.splice(index, 1);
+            }
+            
+            // Populate a new enemy to replace the removed one :: allows enemy to be placed on a new Y level
+            populateNewEnemy();
+        }
+    }
+
+    render() {
+        ctx.drawImage(Resources.get(this.sprite), this.x, this.y);
+    }
+}
 
 // Now write your own player class
 // This class requires an update(), render() and
@@ -48,18 +82,22 @@ class Player {
     }
 
     handleInput(direction) {
-        if (direction === 'up') {
+        if (direction === 'up' && this.y > -35) {
             this.y -= 83;
         }
-        if (direction === 'down') {
+        if (direction === 'down' && this.y < 380) {
             this.y += 83;
         }
-        if (direction === 'right') {
+        if (direction === 'right' && this.x < 405) {
             this.x += 101;
         }
-        if (direction === 'left') {
+        if (direction === 'left' && this.x > 1) {
             this.x -= 101;
         }
+    }
+
+    reset() {
+
     }
 }
 
@@ -72,9 +110,13 @@ let player = new Player();
 let allEnemies = [];
 
 for (let i = 0; i <= 6; i++) {
+    populateNewEnemy();
+}
+
+function populateNewEnemy () {
     let yValueArray = [225, 142, 59];
     let randomYValue = yValueArray[Math.floor(Math.random() * yValueArray.length)];
-    allEnemies.push(new Enemy(0, randomYValue));
+    allEnemies.push(new Enemy(-110, randomYValue));
 }
 
 
