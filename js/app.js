@@ -40,11 +40,14 @@ class Enemy {
         let randomXValue = xValueArray[Math.floor(Math.random() * xValueArray.length)];
         this.xSpeed = randomXValue;
         this.y = y;
+        this.width = 75;
+        this.height = 50;
     }
 
     update(dt) {
+        // Update enemy location
         this.x += dt * this.xSpeed;
-        if (this.x > 490) {
+        if (this.x > 500) {
 
             // Remove enemy once it's crossed the canvas
             let index = allEnemies.indexOf(this);
@@ -55,6 +58,9 @@ class Enemy {
             // Populate a new enemy to replace the removed one :: allows enemy to be placed on a new Y level
             populateNewEnemy();
         }
+
+        // Check for collisions with Player
+        // allEnemies[i].x
     }
 
     render() {
@@ -71,10 +77,26 @@ class Player {
         this.sprite = 'img/char-cat-girl.png';
         this.x = 203;
         this.y = 380;
+        this.width = 75;
+        this.height = 50;
     }
 
     update() {
+        // this.reset();
+        // If player hits water then reset
+        setTimeout(this.reset.bind(this), 10000);
 
+        // Check to see if player collides with any of the enemies
+        for (let i = 0; i < allEnemies.length; i++) {
+            if (allEnemies[i].x < player.x + player.width &&
+                allEnemies[i].x + allEnemies[i].width > player.x &&
+                allEnemies[i].y < player.y + player.height &&
+                allEnemies[i].height + allEnemies[i].y > player.y) {
+                    this.x = 203;
+                    this.y = 380;
+                }
+
+        }
     }
 
     render() {
@@ -97,7 +119,16 @@ class Player {
     }
 
     reset() {
-
+        // if (this.y === -35) {
+        //     setTimeout(function() {
+        //         this.x = 203;
+        //         this.y = 380;
+        //     }, 2000);   
+        // }     
+        if (this.y === -35) {
+            this.x = 203;
+            this.y = 380;
+        }
     }
 }
 
@@ -118,6 +149,11 @@ function populateNewEnemy () {
     let randomYValue = yValueArray[Math.floor(Math.random() * yValueArray.length)];
     allEnemies.push(new Enemy(-110, randomYValue));
 }
+
+
+// function checkLeftBoundary(allEnemies, player) {
+//     return 
+// }
 
 
 
